@@ -1,0 +1,18 @@
+:root {
+    --color-bg-dark: #121212;
+    --color-bg-light: #2c2f38;
+    --color-accent: #007bff;
+    --color-accent-hover: #0056b3;
+    --color-danger: #dc3545;
+    --color-danger-hover: #b02a37;
+    --color-text-light: #f1f1f1;
+    --color-border: #444;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    background-color: var(--color-bg-dark);
+    color: var(--color-text-light);
+    margin: 0;
+    padding: 0;
+  }

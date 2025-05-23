@@ -16,7 +16,7 @@ const SESSION_SECRET = process.env.SESSION_SECRET || "default_secret_key";
 const SESSION_DB_DIR = "server/database";
 const SESSION_DB_NAME = "sessions.sqlite";
 
-const SQLiteStore = SQLiteStoreFactory(session);
+const SessionStore = SQLiteStoreFactory(session);
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
@@ -35,7 +35,7 @@ function setupMiddleware() {
       secret: SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
-      store: new SQLiteStore({
+      store: new SessionStore({
         db: SESSION_DB_NAME,
         dir: SESSION_DB_DIR,
       }),
