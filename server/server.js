@@ -7,7 +7,9 @@ import { dirname, join } from "node:path";
 import { Server } from "socket.io";
 import cors from "cors";
 
+import authRoutes from "./routes/authRoutes.js";
 import staticRoutes from "./routes/staticRoutes.js";
+import { setupDatabase } from "./utils/database.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -51,6 +53,7 @@ function setupMiddleware() {
   );
 
   app.use(express.static(join(__dirname, "../client")));
+  app.use("/api/auth", authRoutes);
   app.use(staticRoutes);
 }
 
@@ -59,6 +62,8 @@ function setupMiddleware() {
  */
 async function startServer() {
   try {
+    const db = await setupDatabase();
+
     server.listen(PORT, () => {
       console.log(`🚀 Server running at http://localhost:${PORT}`);
     });
