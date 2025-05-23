@@ -111,4 +111,28 @@ router.post(
   }
 );
 
+// Logout user route
+router.post("/logout", (req, res) => {
+  if (!req.session) {
+    return res
+      .status(400)
+      .json({ success: false, message: "No active session to log out from." });
+  }
+
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Logout error:", err);
+      return res
+        .status(500)
+        .json({ success: false, message: "Logout failed." });
+    }
+    res.clearCookie("connect.sid", {
+      httpOnly: true,
+      secure: false, // Set to true when HTTPS is enabled
+      sameSite: "lax",
+    });
+    return res.json({ success: true, message: "Logged out successfully." });
+  });
+});
+
 export default router;
