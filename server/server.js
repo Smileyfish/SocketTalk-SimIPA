@@ -7,6 +7,8 @@ import { dirname, join } from "node:path";
 import { Server } from "socket.io";
 import cors from "cors";
 
+import staticRoutes from "./routes/staticRoutes.js";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -49,6 +51,7 @@ function setupMiddleware() {
   );
 
   app.use(express.static(join(__dirname, "../client")));
+  app.use(staticRoutes);
 }
 
 /**
