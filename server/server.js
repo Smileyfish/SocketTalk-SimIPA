@@ -10,6 +10,7 @@ import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
 import staticRoutes from "./routes/staticRoutes.js";
 import { setupDatabase } from "./utils/database.js";
+import { handleSocket } from "./socket/socketHandler.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -63,6 +64,8 @@ function setupMiddleware() {
 async function startServer() {
   try {
     const db = await setupDatabase();
+
+    handleSocket(io, db);
 
     server.listen(PORT, () => {
       console.log(`🚀 Server running at http://localhost:${PORT}`);
