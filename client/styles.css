@@ -146,7 +146,7 @@ a:focus {
   padding: 1rem;
   margin: 0.5rem 0;
   border-radius: 10px;
-  color: white;
+  color: black;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
   background-color: var(--color-bg-light);
   max-width: 80%;
@@ -208,4 +208,240 @@ a:focus {
 
 #form button:hover {
   background-color: var(--color-accent-hover);
+}
+
+/* ==========================
+   Sidebar Container
+   ========================== */
+#sidebar {
+  position: fixed;
+  top: 60px;
+  right: -280px;
+  width: 350px;
+  height: calc(100vh - 120px);
+  background: var(--color-bg-light);
+  border-radius: 10px 0 0 10px;
+  box-shadow: -2px 0px 10px rgba(0, 0, 0, 0.3);
+  padding: 15px;
+  overflow-y: auto;
+  transition: right 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 2;
+}
+
+#sidebar.open {
+  right: 0;
+}
+
+/* ==========================
+   Sidebar Toggle Button
+   ========================== */
+#sidebar-toggle {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: transparent;
+  color: var(--color-accent-hover);
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background-color 0.3s ease;
+  z-index: 10;
+}
+
+#sidebar-toggle:hover {
+  background-color: var(--color-accent-hover);
+  color: #fff;
+}
+
+/* ==========================
+   Sidebar Dropdown
+   ========================== */
+#recipient-select {
+  position: absolute;
+  width: 80%;
+  right: 1px;
+  padding: 10px;
+  margin-top: 5px;
+  background-color: var(--color-bg-light);
+  color: var(--color-text-light);
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+  cursor: pointer;
+}
+
+#recipient-select:hover,
+#recipient-select:focus {
+  border-color: var(--color-accent);
+  background-color: #3a3f48;
+}
+
+#recipient-select option {
+  background: #1e1e1e;
+  color: var(--color-text-light);
+  padding: 10px;
+}
+
+/* ==========================
+   Sidebar Chat Header
+   ========================== */
+#chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 10px 5px;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 10px;
+}
+
+#chat-header h3 {
+  font-size: 1.1rem;
+  color: var(--color-text-light);
+  margin: 0;
+}
+
+#close-chat {
+  background-color: var(--color-border);
+  border: none;
+  color: var(--color-text-light);
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#close-chat:hover {
+  background-color: #666;
+}
+
+/* ==========================
+   Sidebar Chat Box
+   ========================== */
+.chat-box {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  width: 100%;
+  max-height: 100%;
+}
+
+/* ==========================
+   Private Messages List
+   ========================== */
+#private-messages {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px 0;
+  flex-grow: 1;
+  overflow-y: auto;
+  height: 300px;
+}
+
+#private-messages li {
+  background-color: var(--color-bg-light);
+  padding: 10px 15px;
+  margin: 5px 0;
+  border-radius: 10px;
+  color: black;
+  font-size: 0.95rem;
+  max-width: 90%;
+  word-wrap: break-word;
+  transition: background-color 0.3s ease;
+}
+
+/* ==========================
+   Private Chat Input Form
+   ========================== */
+#private-form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border);
+}
+
+#private-input {
+  background-color: #333;
+  color: var(--color-text-light);
+  border: 1px solid var(--color-border);
+  border-radius: 30px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  flex: 1;
+}
+
+#private-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+/* Reuse button style */
+#private-form button {
+  background-color: var(--color-accent);
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 30px;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#private-form button:hover {
+  background-color: var(--color-accent-hover);
+}
+
+/* ==========================
+   Chat Preview Items
+   ========================== */
+#chat-list {
+  width: 100%;
+  margin-top: 60px;
+  list-style: none;
+  padding: 0;
+}
+
+.chat-preview {
+  width: 100%;
+  padding: 16px 20px;
+  margin-bottom: 8px;
+  border-radius: 5%;
+  color: var(--color-text-light);
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border: 1px solid transparent;
+}
+
+.chat-preview:hover {
+  background-color: #3a3f48;
+  transform: translateY(-3px);
+  border-color: #555;
+}
+
+.chat-preview .username {
+  font-weight: 600;
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+  color: #ffffff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.chat-preview .last-message {
+  font-size: 0.95rem;
+  color: #c0c0c0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }

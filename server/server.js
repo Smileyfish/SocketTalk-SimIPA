@@ -10,7 +10,9 @@ import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
 import staticRoutes from "./routes/staticRoutes.js";
 import { setupDatabase } from "./utils/database.js";
+import { initializeUserCache } from "./socket/userCache.js";
 import { handleSocket } from "./socket/socketHandler.js";
+import { socketAuthMiddleware } from "./utils/socketAuthMiddleware.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -64,7 +66,9 @@ function setupMiddleware() {
 async function startServer() {
   try {
     const db = await setupDatabase();
+    await initializeUserCache(db);
 
+    io.use(socketAuthMiddleware);
     handleSocket(io, db);
 
     server.listen(PORT, () => {

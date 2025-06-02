@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import { body, validationResult } from "express-validator";
 import { generateToken } from "../utils/auth.js";
 import { setupDatabase } from "../utils/database.js";
+import { addUserToCache } from "../socket/userCache.js";
 
 const router = express.Router();
 
@@ -50,6 +51,7 @@ router.post(
         hashedPassword
       );
 
+      await addUserToCache(db, username);
       return res
         .status(201)
         .json({ success: true, message: "User registered successfully." });
