@@ -24,6 +24,7 @@ function initializeSocket(token) {
   socket.on("authenticated", (user) => {
     console.log("Authenticated user:", user.username);
     socket.user = user;
+    socket.emit("allchat:history");
   });
 
   socket.on("connect_error", (err) => {
@@ -50,6 +51,23 @@ function initializeSocket(token) {
 
     if (isCurrentChat) {
       addPrivateMessage(sender, content);
+      scrollToBottom("private-messages");
+    }
+  });
+
+  // Receive all previous allchat messages
+  socket.on("allchat:history", (messages) => {
+    messages.forEach(renderPublicMessage);
+  });
+
+  // Receive private message history with selected user
+  socket.on("private:history", ({ withUser, messages }) => {
+    if (selectedUser === withUser) {
+      const list = document.getElementById("private-messages");
+      list.innerHTML = ""; // Clear previous messages
+      messages.forEach(({ sender_username, content }) => {
+        addPrivateMessage(sender_username, content);
+      });
       scrollToBottom("private-messages");
     }
   });
@@ -121,7 +139,7 @@ function openPrivateChat(username) {
 
   renderChatHeader(username);
   renderPrivateChatBox(username);
-  socket.emit("get private messages", { recipient: username });
+  socket.emit("private:history", { withUser: username });
 }
 
 function closePrivateChat() {

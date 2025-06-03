@@ -7,13 +7,28 @@ export async function setupDatabase() {
     driver: sqlite3.Database,
   });
 
-  // Create users table
+  // Create users and messages tables
   await db.exec(`
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS allchat_messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    content TEXT NOT NULL,
+    sender_id TEXT NOT NULL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS private_messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    content TEXT NOT NULL,
+    sender_id TEXT NOT NULL,
+    recipient_id TEXT NOT NULL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
   );
 `);
 

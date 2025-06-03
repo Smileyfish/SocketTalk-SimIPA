@@ -1,4 +1,4 @@
-import { verifyToken } from "./auth.js"; // Assuming you have verifyToken function in utils/auth.js
+import { verifyToken } from "./auth.js";
 
 export async function socketAuthMiddleware(socket, next) {
   const token = socket.handshake.auth.token; // Get the token from the handshake auth object
