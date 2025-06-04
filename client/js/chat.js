@@ -129,7 +129,15 @@ function renderPublicMessage({ username, content }) {
 function createMessageElement(username, content) {
   const item = document.createElement("li");
   item.style.backgroundColor = getUserColor(username);
-  item.textContent = `${username}: ${content}`;
+
+  const strong = document.createElement("strong");
+  strong.textContent = `${username}: `;
+
+  const text = document.createTextNode(content);
+
+  item.appendChild(strong);
+  item.appendChild(text);
+
   return item;
 }
 
@@ -205,7 +213,7 @@ function renderChatHeader(username) {
 
   chatHeader.innerHTML = `
     <h3>Chat with ${username}</h3>
-    <button id="close-chat">←</button>
+    <button id="close-chat">&#8617</button>
   `;
 
   document
@@ -251,7 +259,15 @@ function addPrivateMessage(sender, content) {
   const privateMessages = document.getElementById("private-messages");
   const item = document.createElement("li");
   item.style.backgroundColor = getUserColor(sender);
-  item.textContent = `${sender}: ${content}`;
+
+  const strong = document.createElement("strong");
+  strong.textContent = `${sender}: `;
+
+  const text = document.createTextNode(content);
+
+  item.appendChild(strong);
+  item.appendChild(text);
+
   privateMessages?.appendChild(item);
   scrollToBottom("private-messages");
 }
@@ -265,6 +281,7 @@ function renderPrivateChatPreview({ sender, recipient, content }) {
     preview = document.createElement("div");
     preview.id = `preview-${otherUser}`;
     preview.classList.add("chat-preview");
+    preview.style.backgroundColor = getUserColor(otherUser);
     preview.addEventListener("click", () => {
       selectedUser = otherUser;
       openPrivateChat(otherUser);
@@ -273,8 +290,8 @@ function renderPrivateChatPreview({ sender, recipient, content }) {
   }
 
   preview.innerHTML = `
-    <strong>${otherUser}</strong><br/>
-    <span>${content.slice(0, 30)}</span>
+    <strong class="username">${otherUser}</strong><br/>
+    <span class="last-message">${content.slice(0, 30)}</span>
   `;
 }
 
