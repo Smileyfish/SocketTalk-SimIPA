@@ -309,14 +309,14 @@ a:focus {
 }
 
 #close-chat {
-  position: absolute; /* Align it similarly to #sidebar-toggle */
-  top: 10px; /* Same height as #sidebar-toggle */
-  right: 10px; /* Adjust to align properly within the chat header */
+  position: absolute;
+  top: 10px;
+  right: 10px;
   background-color: transparent;
   border: none;
   border-radius: 5px;
   color: var(--color-danger);
-  font-size: 1.5rem; /* Match the font size of #sidebar-toggle */
+  font-size: 1.5rem;
   width: 50px;
   height: 50px;
   cursor: pointer;
@@ -324,7 +324,7 @@ a:focus {
   align-items: center;
   justify-content: center;
   transition: background-color 0.3s ease;
-  z-index: 10; /* Ensure it stays above other elements */
+  z-index: 10;
 }
 
 #close-chat:hover {
@@ -455,7 +455,7 @@ a:focus {
 }
 
 /* ==========================
-   Logout Button (Top Right)
+   Logout Button
    ========================== */
 #logout-btn {
   position: fixed;
@@ -528,7 +528,7 @@ a:focus {
 
 /* ==========================
          Modal Header
-         ========================== */
+   ========================== */
 .modal-header {
   display: flex;
   align-items: center;
@@ -539,7 +539,7 @@ a:focus {
 
 /* ==========================
          Modal Search Input
-         ========================== */
+   ========================== */
 #user-search {
   background-color: #333;
   color: var(--color-text-light);
@@ -559,7 +559,7 @@ a:focus {
 
 /* ==========================
        Modal Close Button
-       ========================== */
+   ========================== */
 #close-user-modal {
   background-color: var(--color-danger);
   border: none;
@@ -580,8 +580,8 @@ a:focus {
 }
 
 /* ==========================
-         Modal Separator
-         ========================== */
+        Modal Separator
+   ========================== */
 .modal-separator {
   border: none;
   height: 1px;
@@ -590,7 +590,7 @@ a:focus {
 }
 
 /* ==========================
-         User List Inside Modal
+    User List Inside Modal
   ========================== */
 #user-list {
   list-style: none;
@@ -616,7 +616,7 @@ a:focus {
 
 /* ==========================
      Hidden Utility
-     ========================== */
+   ========================== */
 .hidden {
   display: none;
 }
