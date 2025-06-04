@@ -3,6 +3,7 @@ import {
   savePrivateMessage,
   getAllChatMessages,
   getPrivateMessagesBetweenUsers,
+  getRecentPrivateChats,
 } from "../database/messages.js";
 import { users, addUser, getRecipientData, removeUser } from "./socketUsers.js";
 import { userIdCache } from "./userCache.js";
@@ -67,6 +68,16 @@ export function handleSocket(io, db) {
         socket.emit("private:history", { withUser, messages });
       } catch (e) {
         console.error("❌ Error fetching private messages:", e);
+      }
+    });
+
+    // Fetch recent private chat previews
+    socket.on("private:previews", async () => {
+      try {
+        const previews = await getRecentPrivateChats(user.id, user.username);
+        socket.emit("private:previews", previews);
+      } catch (e) {
+        console.error("❌ Error fetching private previews:", e);
       }
     });
 

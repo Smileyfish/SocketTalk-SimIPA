@@ -25,6 +25,7 @@ function initializeSocket(token) {
     console.log("Authenticated user:", user.username);
     socket.user = user;
     socket.emit("allchat:history");
+    socket.emit("private:previews");
   });
 
   socket.on("connect_error", (err) => {
@@ -41,7 +42,6 @@ function initializeSocket(token) {
 
   socket.on("allchat:message", renderPublicMessage);
   socket.on("private:message", ({ sender, recipient, content }) => {
-    console.log(`Private message from ${sender} to ${recipient}: ${content}`);
     const currentUser = socket.user?.username;
 
     // Only show message if it's part of the current open chat
@@ -53,6 +53,7 @@ function initializeSocket(token) {
       addPrivateMessage(sender, content);
       scrollToBottom("private-messages");
     }
+    renderPrivateChatPreview({ sender, recipient, content });
   });
 
   // Receive all previous allchat messages
@@ -71,6 +72,16 @@ function initializeSocket(token) {
       scrollToBottom("private-messages");
     }
   });
+
+  socket.on("private:previews", (previews) => {
+    previews.forEach(({ sender_username, recipient_username, content }) => {
+      renderPrivateChatPreview({
+        sender: sender_username,
+        recipient: recipient_username,
+        content,
+      });
+    });
+  });
 }
 
 // === UI Bindings ===
@@ -88,6 +99,23 @@ function bindUI() {
   document.getElementById("sidebar-toggle")?.addEventListener("click", () => {
     document.getElementById("sidebar")?.classList.toggle("open");
   });
+
+  document.getElementById("open-user-modal")?.addEventListener("click", () => {
+    document.getElementById("user-modal")?.classList.remove("hidden");
+    document.getElementById("user-search").value = "";
+  });
+
+  document.getElementById("user-search")?.addEventListener("input", (e) => {
+    const filter = e.target.value.toLowerCase();
+    document.querySelectorAll("#user-list li").forEach((li) => {
+      const name = li.textContent.toLowerCase();
+      li.style.display = name.includes(filter) ? "block" : "none";
+    });
+  });
+}
+
+function closeUserModal() {
+  document.getElementById("user-modal")?.classList.add("hidden");
 }
 
 // === UI Update Functions ===
@@ -106,17 +134,25 @@ function createMessageElement(username, content) {
 }
 
 function updateRecipientSelect(users) {
-  const recipientSelect = document.getElementById("recipient-select");
-  if (!recipientSelect || !socket.user) return;
+  const userList = document.getElementById("user-list");
+  const currentUser = socket.user?.username;
+  if (!userList || !currentUser) return;
 
-  recipientSelect.innerHTML =
-    '<option value="" disabled selected>Select a user</option>';
+  userList.innerHTML = "";
+
   users.forEach((username) => {
-    if (username !== socket.user.username) {
-      const option = document.createElement("option");
-      option.value = username;
-      option.textContent = username;
-      recipientSelect.appendChild(option);
+    if (username !== currentUser) {
+      const li = document.createElement("li");
+      li.textContent = username;
+      li.classList.add("user-item");
+      li.style.backgroundColor = getUserColor(username);
+      li.style.color = "#000";
+      li.addEventListener("click", () => {
+        closeUserModal();
+        selectedUser = username;
+        openPrivateChat(username);
+      });
+      userList.appendChild(li);
     }
   });
 }
@@ -137,9 +173,12 @@ function openPrivateChat(username) {
   hideElement("recipient-select");
   hideElement("chat-list");
 
+  selectedUser = username;
   renderChatHeader(username);
   renderPrivateChatBox(username);
   socket.emit("private:history", { withUser: username });
+
+  updateNewChatButtonVisibility();
 }
 
 function closePrivateChat() {
@@ -148,6 +187,9 @@ function closePrivateChat() {
   showElement("chat-list");
   removeElement("chat-header");
   removeElement("private-chat");
+  socket.emit("private:previews");
+
+  updateNewChatButtonVisibility();
 }
 
 function renderChatHeader(username) {
@@ -163,7 +205,7 @@ function renderChatHeader(username) {
 
   chatHeader.innerHTML = `
     <h3>Chat with ${username}</h3>
-    <button id="close-chat">🔙</button>
+    <button id="close-chat">←</button>
   `;
 
   document
@@ -212,6 +254,56 @@ function addPrivateMessage(sender, content) {
   item.textContent = `${sender}: ${content}`;
   privateMessages?.appendChild(item);
   scrollToBottom("private-messages");
+}
+
+function renderPrivateChatPreview({ sender, recipient, content }) {
+  const currentUser = socket.user.username;
+  const otherUser = sender === currentUser ? recipient : sender;
+
+  let preview = document.getElementById(`preview-${otherUser}`);
+  if (!preview) {
+    preview = document.createElement("div");
+    preview.id = `preview-${otherUser}`;
+    preview.classList.add("chat-preview");
+    preview.addEventListener("click", () => {
+      selectedUser = otherUser;
+      openPrivateChat(otherUser);
+    });
+    document.getElementById("chat-list").appendChild(preview);
+  }
+
+  preview.innerHTML = `
+    <strong>${otherUser}</strong><br/>
+    <span>${content.slice(0, 30)}</span>
+  `;
+}
+
+// === Modal and Button Visibility Logic ===
+const openModalBtn = document.getElementById("open-user-modal");
+const closeModalBtn = document.getElementById("close-user-modal");
+const userModal = document.getElementById("user-modal");
+const chatSidebar = document.getElementById("sidebar");
+
+openModalBtn?.addEventListener("click", () => {
+  userModal?.classList.add("open");
+  userModal?.classList.remove("hidden");
+  document.getElementById("user-search").value = "";
+});
+
+closeModalBtn?.addEventListener("click", () => {
+  userModal?.classList.remove("open");
+  userModal?.classList.add("hidden");
+});
+
+function updateNewChatButtonVisibility() {
+  const openModalBtn = document.getElementById("open-user-modal");
+  if (!openModalBtn) return;
+
+  if (selectedUser !== null) {
+    openModalBtn.style.display = "none";
+  } else {
+    openModalBtn.style.display = "block";
+  }
 }
 
 // === Utilities ===

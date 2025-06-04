@@ -83,3 +83,37 @@ export async function getPrivateMessagesBetweenUsers(userA, userB) {
 
   return messages;
 }
+
+export async function getRecentPrivateChats(userId, userUsername) {
+  const db = await dbPromise;
+
+  const messages = await db.all(
+    `
+    SELECT 
+      pm.content,
+      pm.timestamp,
+      sender.username AS sender_username,
+      recipient.username AS recipient_username
+    FROM private_messages pm
+    JOIN users sender ON sender.id = pm.sender_id
+    JOIN users recipient ON recipient.id = pm.recipient_id
+    WHERE sender.id = ? OR recipient.id = ?
+    ORDER BY pm.timestamp DESC
+  `,
+    [userId, userId]
+  );
+
+  const previews = {};
+  for (const msg of messages) {
+    const otherUser =
+      msg.sender_username === userUsername
+        ? msg.recipient_username
+        : msg.sender_username;
+
+    if (!previews[otherUser]) {
+      previews[otherUser] = msg;
+    }
+  }
+
+  return Object.values(previews);
+}

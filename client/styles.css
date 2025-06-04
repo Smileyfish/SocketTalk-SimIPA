@@ -248,7 +248,7 @@ a:focus {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 1.5rem;
   transition: background-color 0.3s ease;
   z-index: 10;
 }
@@ -305,21 +305,24 @@ a:focus {
 #chat-header h3 {
   font-size: 1.1rem;
   color: var(--color-text-light);
-  margin: 0;
+  margin-left: 80px;
 }
 
 #close-chat {
-  background-color: var(--color-border);
+  background-color: transparent;
   border: none;
-  color: var(--color-text-light);
+  color: red;
+  font-size: 1.5rem;
   padding: 6px 12px;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  font-family: "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji",
+    sans-serif;
 }
 
 #close-chat:hover {
-  background-color: #666;
+  background-color: var(--color-accent-hover);
 }
 
 /* ==========================
@@ -404,7 +407,7 @@ a:focus {
    ========================== */
 #chat-list {
   width: 100%;
-  margin-top: 60px;
+  margin-top: 10px;
   list-style: none;
   padding: 0;
 }
@@ -444,4 +447,172 @@ a:focus {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+}
+
+/* ==========================
+   Logout Button (Top Right)
+   ========================== */
+#logout-btn {
+  position: fixed;
+  top: 15px;
+  right: 20px;
+  background-color: var(--color-danger);
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  z-index: 1000;
+}
+
+#logout-btn:hover {
+  background-color: var(--color-danger-hover);
+  transform: translateY(-2px);
+}
+
+/* ==========================
+   New Chat Button
+   ========================== */
+#open-user-modal {
+  padding: 0.7rem 1.2rem;
+  border: none;
+  border-radius: 30px;
+  background-color: var(--color-accent);
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 10px auto;
+  display: block;
+}
+
+#open-user-modal:hover,
+#open-user-modal:focus {
+  background-color: var(--color-accent-hover);
+  outline: none;
+}
+
+/* ==========================
+     Modal Container
+     ========================== */
+.modal {
+  position: fixed;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 320px;
+  background-color: var(--color-bg-light);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  z-index: 1000;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  display: none;
+}
+
+/* Show modal when needed */
+.modal.open {
+  display: block;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+/* ==========================
+         Modal Header
+         ========================== */
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+/* ==========================
+         Modal Search Input
+         ========================== */
+#user-search {
+  background-color: #333;
+  color: var(--color-text-light);
+  border: 1px solid var(--color-border);
+  border-radius: 30px;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  flex: 1;
+  width: 100%;
+  transition: border-color 0.3s ease;
+}
+
+#user-search:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+/* ==========================
+       Modal Close Button
+       ========================== */
+#close-user-modal {
+  background-color: var(--color-danger);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 1.2rem;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+#close-user-modal:hover {
+  background-color: var(--color-danger-hover);
+}
+
+/* ==========================
+         Modal Separator
+         ========================== */
+.modal-separator {
+  border: none;
+  height: 1px;
+  background-color: var(--color-border);
+  margin: 1rem 0;
+}
+
+/* ==========================
+         User List Inside Modal
+         ========================== */
+#user-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+#user-list li {
+  padding: 10px 15px;
+  margin-bottom: 8px;
+  background-color: #3a3f48;
+  border-radius: 8px;
+  color: var(--color-text-light);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#user-list li:hover {
+  background-color: var(--color-accent-hover);
+}
+
+/* ==========================
+     Hidden Utility
+     ========================== */
+.hidden {
+  display: none;
 }

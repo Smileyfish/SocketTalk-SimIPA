@@ -6,15 +6,28 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <div class="top-bar">
+      <button id="logout-btn">Logout</button>
+    </div>
     <h1>SocketTalk</h1>
-    <button id="logout-btn">Logout</button>
 
     <!-- Sidebar -->
     <div id="sidebar" class="sidebar">
       <button id="sidebar-toggle">☰</button>
-      <select id="recipient-select">
-        <option value="" disabled selected>Online Users</option>
-      </select>
+      <button id="open-user-modal">&#xFF0B; New Chat</button>
+
+      <!-- Modal -->
+      <div id="user-modal" class="modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <input type="text" id="user-search" placeholder="Search users..." />
+            <button id="close-user-modal" class="close-modal-btn">×</button>
+          </div>
+          <hr class="modal-separator" />
+          <ul id="user-list"></ul>
+        </div>
+      </div>
+
       <ul id="chat-list"></ul>
     </div>
 
