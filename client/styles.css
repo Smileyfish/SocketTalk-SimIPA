@@ -297,7 +297,7 @@ a:focus {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 10px 5px;
+  padding: 4% 5px;
   border-bottom: 1px solid var(--color-border);
   margin-bottom: 10px;
 }
@@ -309,18 +309,22 @@ a:focus {
 }
 
 #close-chat {
+  position: absolute; /* Align it similarly to #sidebar-toggle */
+  top: 10px; /* Same height as #sidebar-toggle */
+  right: 10px; /* Adjust to align properly within the chat header */
   background-color: transparent;
   border: none;
   border-radius: 5px;
   color: var(--color-danger);
-  font-size: 1.75rem;
-  width: 40px; /* Ensure consistent width */
-  height: 40px; /* Ensure consistent height */
+  font-size: 1.5rem; /* Match the font size of #sidebar-toggle */
+  width: 50px;
+  height: 50px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background-color 0.3s ease;
+  z-index: 10; /* Ensure it stays above other elements */
 }
 
 #close-chat:hover {
@@ -357,7 +361,7 @@ a:focus {
   border-radius: 10px;
   color: black;
   font-size: 0.95rem;
-  max-width: 90%;
+  max-width: 100%;
   word-wrap: break-word;
   transition: background-color 0.3s ease;
 }
@@ -511,7 +515,6 @@ a:focus {
   padding: 1.5rem;
   z-index: 1000;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-  display: none;
 }
 
 /* Show modal when needed */
