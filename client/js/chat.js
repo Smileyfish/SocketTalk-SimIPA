@@ -125,6 +125,7 @@ function renderPrivateChatBox(username) {
   chatBox.innerHTML = `
     <ul id="private-messages"></ul>
     <form id="private-form">
+      <div id="error-msg" class="message private"></div> <!-- Error message -->
       <input id="private-input" placeholder="Type a message..." autocomplete="off" />
       <button type="submit">Send</button>
     </form>
@@ -134,14 +135,19 @@ function renderPrivateChatBox(username) {
     e.preventDefault();
     const input = document.getElementById("private-input");
     const content = input?.value.trim();
-    if (content) {
-      socket.emit("private:message", {
-        recipient: username,
-        content,
-      });
-      addPrivateMessage(socket.user.username, content);
-      input.value = "";
+
+    if (!isValidMessage(content)) {
+      showError("Message must be between 1 and 500 characters.", "private");
+      return;
     }
+    clearError();
+
+    socket.emit("private:message", {
+      recipient: username,
+      content,
+    });
+    addPrivateMessage(socket.user.username, content);
+    input.value = "";
   });
 }
 
@@ -188,6 +194,23 @@ function handleConnectError(err) {
     localStorage.removeItem("token");
     window.location.replace("/login");
   }
+}
+
+function handlePublicMessage(e) {
+  e.preventDefault();
+  const input = document.getElementById("input");
+
+  if (!isValidMessage(input?.value)) {
+    showError("Message must be between 1 and 500 characters.");
+    return;
+  }
+
+  clearError();
+
+  socket.emit("allchat:message", {
+    content: input.value.trim(),
+  });
+  input.value = "";
 }
 
 function handlePrivateMessage({ sender, recipient, content }) {
@@ -327,21 +350,4 @@ function updateUserList(users) {
       userList.appendChild(li);
     }
   });
-}
-
-function handlePublicMessage(e) {
-  e.preventDefault();
-  const input = document.getElementById("input");
-
-  if (!isValidMessage(input?.value)) {
-    showError("Message must be between 1 and 500 characters.");
-    return;
-  }
-
-  clearError();
-
-  socket.emit("allchat:message", {
-    content: input.value.trim(),
-  });
-  input.value = "";
 }
