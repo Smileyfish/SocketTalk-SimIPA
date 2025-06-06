@@ -4,6 +4,7 @@ import { body, validationResult } from "express-validator";
 import { generateToken } from "../utils/auth.js";
 import { setupDatabase } from "../utils/database.js";
 import { addUserToCache } from "../socket/userCache.js";
+import { logError } from "../utils/logger.js";
 
 const router = express.Router();
 
@@ -62,7 +63,7 @@ router.post(
           .status(409)
           .json({ success: false, message: "Username already exists." });
       }
-      console.error("Registration error:", error);
+      logError(error, "Registration Error");
       return res
         .status(500)
         .json({ success: false, message: "Internal server error." });
@@ -105,7 +106,7 @@ router.post(
       const token = generateToken({ id: user.id, username: user.username });
       return res.json({ success: true, token });
     } catch (error) {
-      console.error("Login error:", error);
+      logError(error, "Login Error");
       return res
         .status(500)
         .json({ success: false, message: "Internal server error." });
@@ -123,7 +124,7 @@ router.post("/logout", (req, res) => {
 
   req.session.destroy((err) => {
     if (err) {
-      console.error("Logout error:", err);
+      logError(error, "Logout Error");
       return res
         .status(500)
         .json({ success: false, message: "Logout failed." });

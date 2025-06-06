@@ -1,3 +1,5 @@
+import { clearError, showError } from "./utils/errors.js";
+import { isValidMessage } from "./utils/validation.js";
 // === Utilities ===
 
 function hideElement(id) {
@@ -234,6 +236,9 @@ function bindUI() {
 
   document.getElementById("sidebar-toggle")?.addEventListener("click", () => {
     document.getElementById("sidebar")?.classList.toggle("open");
+    const messages = document.getElementById("messages");
+
+    messages?.classList.toggle("sidebar-open"); // Adjust the messages width
   });
 
   document.getElementById("open-user-modal")?.addEventListener("click", () => {
@@ -327,10 +332,16 @@ function updateUserList(users) {
 function handlePublicMessage(e) {
   e.preventDefault();
   const input = document.getElementById("input");
-  if (input?.value.trim()) {
-    socket.emit("allchat:message", {
-      content: input.value.trim(),
-    });
-    input.value = "";
+
+  if (!isValidMessage(input?.value)) {
+    showError("Message must be between 1 and 500 characters.");
+    return;
   }
+
+  clearError();
+
+  socket.emit("allchat:message", {
+    content: input.value.trim(),
+  });
+  input.value = "";
 }
