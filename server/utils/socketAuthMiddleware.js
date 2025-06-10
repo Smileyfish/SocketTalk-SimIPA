@@ -13,7 +13,7 @@ export async function socketAuthMiddleware(socket, next) {
     socket.user = user; // Attach the user to the socket object
     next(); // Allow the connection
   } catch (err) {
-    logError(error, "Authentication Error");
+    logError(err, "Authentication Error");
     return next(new Error("Authentication error")); // Reject the connection if token is invalid
   }
 }

@@ -116,6 +116,14 @@ function login(event) {
     return showMessage("Username and password are required.", "error");
   }
 
+  if (!username || username.length < 3) {
+    return showMessage("Invalid credentials", "error");
+  }
+
+  if (!password || password.length < 6) {
+    return showMessage("Invalid credentials", "error");
+  }
+
   handleAuth("login", { username, password }, "/");
 }
 
