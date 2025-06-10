@@ -265,8 +265,16 @@ function bindUI() {
   });
 
   document.getElementById("open-user-modal")?.addEventListener("click", () => {
-    document.getElementById("user-modal")?.classList.remove("hidden");
-    document.getElementById("user-search").value = "";
+    const userModal = document.getElementById("user-modal");
+    const userSearch = document.getElementById("user-search");
+    const userListItems = document.querySelectorAll("#user-list li");
+
+    userModal?.classList.remove("hidden");
+    userSearch.value = "";
+
+    userListItems.forEach((li) => {
+      li.style.display = "block";
+    });
   });
 
   document.getElementById("user-search")?.addEventListener("input", (e) => {
@@ -338,7 +346,7 @@ function updateUserList(users) {
   users.forEach((username) => {
     if (username !== currentUser) {
       const li = document.createElement("li");
-      li.textContent = username;
+      li.innerHTML = `<strong>${username}</strong>`;
       li.classList.add("user-item");
       li.style.backgroundColor = getUserColor(username);
       li.style.color = "#000";
