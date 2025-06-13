@@ -129,6 +129,8 @@ function login(event) {
 
 /**
  * Log the user out by calling the backend and clearing local/session storage.
+ * Clears the session cookie and redirects the user to the login page.
+ * Displays an alert if logout fails.
  */
 async function logout() {
   try {

@@ -1,13 +1,17 @@
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
 
+/**
+ * Set up the SQLite database.
+ * Creates the database file and initializes the required tables if they do not exist.
+ * @returns {Promise<import("sqlite").Database>} - Resolves with the database instance.
+ */
 export async function setupDatabase() {
   const db = await open({
     filename: "server/database/chat.db",
     driver: sqlite3.Database,
   });
 
-  // Create users and messages tables
   await db.exec(`
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -32,6 +32,7 @@ const io = new Server(server, {
 
 /**
  * Sets up global middleware for the Express app.
+ * Configures CORS, JSON parsing, session management, and static file serving.
  */
 function setupMiddleware() {
   app.use(cors({ origin: "*", credentials: true }));
@@ -50,7 +51,7 @@ function setupMiddleware() {
         httpOnly: true,
         sameSite: "lax",
         secure: false, // Set to true when HTTPS is enabled
-        maxAge: 24 * 60 * 60 * 1000, // 1 day
+        maxAge: 24 * 60 * 60 * 1000,
       },
     })
   );
@@ -62,6 +63,9 @@ function setupMiddleware() {
 
 /**
  * Bootstraps and starts the HTTP and WebSocket servers.
+ * Initializes the database, user cache, and socket middleware.
+ * Starts listening for incoming connections.
+ * @returns {Promise<void>} - Resolves when the server starts successfully.
  */
 async function startServer() {
   try {

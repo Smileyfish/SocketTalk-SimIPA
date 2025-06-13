@@ -1,5 +1,11 @@
 let errorTimeout;
 
+/**
+ * Display an error message in the UI.
+ * @param {string} msg - The error message to display.
+ * @param {"private" | "allchat"} [context="allchat"] - The context for the error message styling.
+ * @param {number} [duration=5000] - Duration in milliseconds before the error message is cleared.
+ */
 export function showError(msg, context = "allchat", duration = 5000) {
   const el = document.getElementById("error-msg");
   if (el) {
@@ -19,6 +25,9 @@ export function showError(msg, context = "allchat", duration = 5000) {
   }
 }
 
+/**
+ * Clear the error message from the UI.
+ */
 export function clearError() {
   const el = document.getElementById("error-msg");
   if (el) {

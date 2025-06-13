@@ -13,7 +13,10 @@ let db;
   db = await setupDatabase();
 })();
 
-// Validation middleware for registration and login
+/**
+ * Middleware to validate user input for registration and login.
+ * Ensures username and password meet length requirements.
+ */
 const validateUserInput = [
   body("username")
     .trim()
@@ -24,7 +27,13 @@ const validateUserInput = [
     .withMessage("Password must be at least 6 characters."),
 ];
 
-// Centralized error formatter for validation results
+/**
+ * Middleware to handle validation errors.
+ * Formats validation errors and sends a response if errors are present.
+ * @param {import("express").Request} req - Express request object.
+ * @param {import("express").Response} res - Express response object.
+ * @param {import("express").NextFunction} next - Express next middleware function.
+ */
 function handleValidationErrors(req, res, next) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -36,7 +45,12 @@ function handleValidationErrors(req, res, next) {
   next();
 }
 
-// Register user route
+/**
+ * Route to register a new user.
+ * Validates input, hashes the password, and saves the user to the database.
+ * @param {import("express").Request} req - Express request object.
+ * @param {import("express").Response} res - Express response object.
+ */
 router.post(
   "/register",
   validateUserInput,
@@ -71,7 +85,12 @@ router.post(
   }
 );
 
-// Login user route
+/**
+ * Route to log in a user.
+ * Validates input, checks credentials, and generates a token.
+ * @param {import("express").Request} req - Express request object.
+ * @param {import("express").Response} res - Express response object.
+ */
 router.post(
   "/login",
   validateUserInput,
@@ -114,7 +133,12 @@ router.post(
   }
 );
 
-// Logout user route
+/**
+ * Route to log out a user.
+ * Destroys the session and clears the session cookie.
+ * @param {import("express").Request} req - Express request object.
+ * @param {import("express").Response} res - Express response object.
+ */
 router.post("/logout", (req, res) => {
   if (!req.session) {
     return res

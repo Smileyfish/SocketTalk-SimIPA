@@ -2,21 +2,37 @@ import { clearError, showError } from "./utils/errors.js";
 import { isValidMessage } from "./utils/validation.js";
 // === Utilities ===
 
+/**
+ * Hide an HTML element by its ID.
+ * @param {string} id - The ID of the element to hide.
+ */
 function hideElement(id) {
   const el = document.getElementById(id);
   if (el) el.style.display = "none";
 }
 
+/**
+ * Show an HTML element by its ID.
+ * @param {string} id - The ID of the element to show.
+ */
 function showElement(id) {
   const el = document.getElementById(id);
   if (el) el.style.display = "block";
 }
 
+/**
+ * Remove an HTML element by its ID.
+ * @param {string} id - The ID of the element to remove.
+ */
 function removeElement(id) {
   const el = document.getElementById(id);
   el?.remove();
 }
 
+/**
+ * Scroll an HTML element to the bottom.
+ * @param {string} elementId - The ID of the element to scroll.
+ */
 function scrollToBottom(elementId) {
   const element = document.getElementById(elementId);
   if (element) {
@@ -24,6 +40,11 @@ function scrollToBottom(elementId) {
   }
 }
 
+/**
+ * Generate a unique color for a username.
+ * @param {string} username - The username to generate a color for.
+ * @returns {string} The generated color in HSL format.
+ */
 function getUserColor(username) {
   if (!userColors[username]) {
     let hash = 0;
@@ -38,6 +59,12 @@ function getUserColor(username) {
 
 // === Message Rendering Functions ===
 
+/**
+ * Create a message element for rendering in the chat.
+ * @param {string} username - The username of the message sender.
+ * @param {string} content - The content of the message.
+ * @returns {HTMLLIElement} The created message element.
+ */
 function createMessageElement(username, content) {
   const item = document.createElement("li");
   item.style.backgroundColor = getUserColor(username);
@@ -53,6 +80,10 @@ function createMessageElement(username, content) {
   return item;
 }
 
+/**
+ * Render a public message in the chat.
+ * @param {{ username: string, content: string }} message - The message object containing username and content.
+ */
 function renderPublicMessage({ username, content }) {
   const messages = document.getElementById("messages");
   const li = createMessageElement(username, content);
@@ -60,6 +91,11 @@ function renderPublicMessage({ username, content }) {
   scrollToBottom("messages");
 }
 
+/**
+ * Add a private message to the private chat.
+ * @param {string} sender - The username of the message sender.
+ * @param {string} content - The content of the message.
+ */
 function addPrivateMessage(sender, content) {
   const privateMessages = document.getElementById("private-messages");
   const item = createMessageElement(sender, content);
@@ -69,6 +105,10 @@ function addPrivateMessage(sender, content) {
 
 // === Private Chat Management ===
 
+/**
+ * Open a private chat with a specific user.
+ * @param {string} username - The username of the user to chat with.
+ */
 function openPrivateChat(username) {
   hideElement("chat-list");
 
@@ -80,6 +120,9 @@ function openPrivateChat(username) {
   updateNewChatButtonVisibility();
 }
 
+/**
+ * Close the currently open private chat.
+ */
 function closePrivateChat() {
   selectedUser = null;
   showElement("chat-list");
@@ -90,6 +133,10 @@ function closePrivateChat() {
   updateNewChatButtonVisibility();
 }
 
+/**
+ * Render the header for a private chat.
+ * @param {string} username - The username of the user in the private chat.
+ */
 function renderChatHeader(username) {
   const sidebar = document.getElementById("sidebar");
   let chatHeader = document.getElementById("chat-header");
@@ -111,6 +158,10 @@ function renderChatHeader(username) {
     ?.addEventListener("click", closePrivateChat);
 }
 
+/**
+ * Render the private chat box for a specific user.
+ * @param {string} username - The username of the user in the private chat.
+ */
 function renderPrivateChatBox(username) {
   const sidebar = document.getElementById("sidebar");
   let chatBox = document.getElementById("private-chat");
@@ -151,6 +202,10 @@ function renderPrivateChatBox(username) {
   });
 }
 
+/**
+ * Render a preview of a private chat.
+ * @param {{ sender: string, recipient: string, content: string }} message - The message object containing sender, recipient, and content.
+ */
 function renderPrivateChatPreview({ sender, recipient, content }) {
   const currentUser = socket.user.username;
   const otherUser = sender === currentUser ? recipient : sender;
@@ -176,10 +231,17 @@ function renderPrivateChatPreview({ sender, recipient, content }) {
 
 // === Socket Event Handlers ===
 
+/**
+ * Handle socket connection event.
+ */
 function handleConnect() {
   console.log("Connected to server with ID:", socket.id);
 }
 
+/**
+ * Handle socket authentication event.
+ * @param {{ username: string }} user - The authenticated user object.
+ */
 function handleAuthenticated(user) {
   console.log("Authenticated user:", user.username);
   socket.user = user;
@@ -187,6 +249,10 @@ function handleAuthenticated(user) {
   socket.emit("private:previews");
 }
 
+/**
+ * Handle socket connection error event.
+ * @param {Error} err - The error object.
+ */
 function handleConnectError(err) {
   if (err.message === "Authentication error") {
     console.error("Socket auth failed:", err.message);
@@ -196,6 +262,10 @@ function handleConnectError(err) {
   }
 }
 
+/**
+ * Handle public message submission.
+ * @param {Event} e - The submit event.
+ */
 function handlePublicMessage(e) {
   e.preventDefault();
   const input = document.getElementById("input");
@@ -213,6 +283,10 @@ function handlePublicMessage(e) {
   input.value = "";
 }
 
+/**
+ * Handle incoming private messages.
+ * @param {{ sender: string, recipient: string, content: string }} message - The message object containing sender, recipient, and content.
+ */
 function handlePrivateMessage({ sender, recipient, content }) {
   const currentUser = socket.user?.username;
   const isCurrentChat =
@@ -226,10 +300,18 @@ function handlePrivateMessage({ sender, recipient, content }) {
   renderPrivateChatPreview({ sender, recipient, content });
 }
 
+/**
+ * Handle allchat history messages.
+ * @param {Array<{ username: string, content: string }>} messages - Array of public messages.
+ */
 function handleAllchatHistory(messages) {
   messages.forEach(renderPublicMessage);
 }
 
+/**
+ * Handle private chat history messages.
+ * @param {{ withUser: string, messages: Array<{ sender_username: string, content: string }> }} history - The private chat history object.
+ */
 function handlePrivateHistory({ withUser, messages }) {
   if (selectedUser === withUser) {
     const list = document.getElementById("private-messages");
@@ -241,6 +323,10 @@ function handlePrivateHistory({ withUser, messages }) {
   }
 }
 
+/**
+ * Handle private chat previews.
+ * @param {Array<{ sender_username: string, recipient_username: string, content: string }>} previews - Array of private chat previews.
+ */
 function handlePrivatePreviews(previews) {
   previews.forEach(({ sender_username, recipient_username, content }) => {
     renderPrivateChatPreview({
@@ -252,6 +338,10 @@ function handlePrivatePreviews(previews) {
 }
 
 // === UI Event Bindings ===
+
+/**
+ * Bind UI events to their respective handlers.
+ */
 function bindUI() {
   document
     .getElementById("form")
@@ -290,10 +380,16 @@ function bindUI() {
     ?.addEventListener("click", closeUserModal);
 }
 
+/**
+ * Close the user modal.
+ */
 function closeUserModal() {
   document.getElementById("user-modal")?.classList.add("hidden");
 }
 
+/**
+ * Update the visibility of the "New Chat" button based on the current chat state.
+ */
 function updateNewChatButtonVisibility() {
   const openModalBtn = document.getElementById("open-user-modal");
   if (!openModalBtn) return;
@@ -319,6 +415,10 @@ if (!token) {
   bindUI();
 }
 
+/**
+ * Initialize the socket connection.
+ * @param {string} token - The authentication token for the socket connection.
+ */
 function initializeSocket(token) {
   socket = io("http://localhost:3000", {
     auth: { token },
@@ -336,6 +436,10 @@ function initializeSocket(token) {
   socket.on("private:previews", handlePrivatePreviews);
 }
 
+/**
+ * Update the user list in the UI.
+ * @param {Array<string>} users - Array of usernames to display in the user list.
+ */
 function updateUserList(users) {
   const userList = document.getElementById("user-list");
   const currentUser = socket.user?.username;

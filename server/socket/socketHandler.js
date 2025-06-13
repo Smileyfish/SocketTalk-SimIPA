@@ -8,6 +8,11 @@ import {
 import { users, addUser, getRecipientData, removeUser } from "./socketUsers.js";
 import { userIdCache } from "./userCache.js";
 
+/**
+ * Handles socket connections and events.
+ * @param {import("socket.io").Server} io - The Socket.IO server instance.
+ * @param {import("sqlite").Database} db - The database instance.
+ */
 export function handleSocket(io, db) {
   io.on("connection", async (socket) => {
     const { user } = socket;
