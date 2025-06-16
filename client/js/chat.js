@@ -1,5 +1,8 @@
 import { clearError, showError } from "./utils/errors.js";
 import { isValidMessage } from "./utils/validation.js";
+
+let allUsers = [];
+let onlineUsers = new Set();
 // === Utilities ===
 
 /**
@@ -135,11 +138,14 @@ function closePrivateChat() {
 
 /**
  * Render the header for a private chat.
+ * Displays the username of the user in the private chat and their online status.
  * @param {string} username - The username of the user in the private chat.
  */
 function renderChatHeader(username) {
   const sidebar = document.getElementById("sidebar");
   let chatHeader = document.getElementById("chat-header");
+
+  const isOnline = onlineUsers.has(username);
 
   if (!chatHeader) {
     chatHeader = document.createElement("div");
@@ -149,13 +155,32 @@ function renderChatHeader(username) {
   }
 
   chatHeader.innerHTML = `
-    <h3>Chat with ${username}</h3>
-    <button id="close-chat">↩</button>
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+      <h3 style="display: flex; align-items: center; gap: 6px;">
+        Chat with ${username}
+        ${
+          isOnline
+            ? '<span class="online-dot" style="margin-left: 4px;"></span>'
+            : ""
+        }
+      </h3>
+      <button id="close-chat">↩</button>
+    </div>
   `;
 
   document
     .getElementById("close-chat")
     ?.addEventListener("click", closePrivateChat);
+}
+
+/**
+ * Refresh the private chat header.
+ * Re-renders the chat header for the currently selected user, if any.
+ */
+function refreshChatHeader() {
+  if (selectedUser) {
+    renderChatHeader(selectedUser);
+  }
 }
 
 /**
@@ -429,6 +454,11 @@ function initializeSocket(token) {
   socket.on("authenticated", handleAuthenticated);
   socket.on("connect_error", handleConnectError);
   socket.on("users:list", updateUserList);
+  socket.on("users:online", (online) => {
+    onlineUsers = new Set(online);
+    updateUserList(allUsers);
+    refreshChatHeader();
+  });
   socket.on("allchat:message", renderPublicMessage);
   socket.on("private:message", handlePrivateMessage);
   socket.on("allchat:history", handleAllchatHistory);
@@ -438,9 +468,13 @@ function initializeSocket(token) {
 
 /**
  * Update the user list in the UI.
+ * Displays a list of users, highlighting the online status with a dot indicator.
+ * Excludes the current user from the list.
  * @param {Array<string>} users - Array of usernames to display in the user list.
  */
 function updateUserList(users) {
+  allUsers = users;
+
   const userList = document.getElementById("user-list");
   const currentUser = socket.user?.username;
   if (!userList || !currentUser) return;
@@ -448,18 +482,45 @@ function updateUserList(users) {
   userList.innerHTML = "";
 
   users.forEach((username) => {
-    if (username !== currentUser) {
-      const li = document.createElement("li");
-      li.innerHTML = `<strong>${username}</strong>`;
-      li.classList.add("user-item");
-      li.style.backgroundColor = getUserColor(username);
-      li.style.color = "#000";
-      li.addEventListener("click", () => {
-        closeUserModal();
-        selectedUser = username;
-        openPrivateChat(username);
-      });
-      userList.appendChild(li);
+    if (username === currentUser) return;
+
+    // Create wrapper container
+    const wrapper = document.createElement("div");
+    wrapper.classList.add("user-wrapper");
+    wrapper.style.display = "flex";
+    wrapper.style.alignItems = "center";
+    wrapper.style.gap = "8px"; // space between item and dot
+
+    // Create the actual user item
+    const li = document.createElement("li");
+    li.classList.add("user-item");
+    li.innerHTML = `<strong>${username}</strong>`;
+    li.style.backgroundColor = getUserColor(username);
+    li.style.color = "#000";
+    li.style.padding = "6px 10px";
+    li.style.cursor = "pointer";
+    li.style.flexGrow = "1"; // fills available width
+
+    li.addEventListener("click", () => {
+      closeUserModal();
+      selectedUser = username;
+      openPrivateChat(username);
+    });
+
+    // Create dot if user is online
+    if (onlineUsers.has(username)) {
+      const dot = document.createElement("span");
+      dot.className = "online-dot";
+      wrapper.appendChild(dot);
+    } else {
+      // spacer for alignment
+      const spacer = document.createElement("span");
+      spacer.style.width = "10px"; // same as dot size
+      wrapper.appendChild(spacer);
     }
+
+    // Append li and dot/spacer to wrapper
+    wrapper.insertBefore(li, wrapper.firstChild);
+    userList.appendChild(wrapper);
   });
 }

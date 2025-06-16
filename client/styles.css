@@ -658,11 +658,23 @@ a:focus {
 }
 
 /* ==========================
-     Hidden Utility
+    Utility
    ========================== */
 .hidden {
   display: none;
 }
+
+.online-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: limegreen;
+  flex-shrink: 0;
+}
+
+/* ==========================
+   Scrollbar Styles for Chrome/Safari
+   ========================== */
 
 /* Style the whole scrollbar */
 ::-webkit-scrollbar {
