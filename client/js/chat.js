@@ -445,7 +445,7 @@ if (!token) {
  * @param {string} token - The authentication token for the socket connection.
  */
 function initializeSocket(token) {
-  socket = io("http://localhost:3000", {
+  socket = io({
     auth: { token },
     transports: ["websocket"],
   });
